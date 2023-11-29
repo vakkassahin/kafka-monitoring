@@ -25,7 +25,7 @@ services:
       - "2181:2181"
 
   monitoring:
-    build: ./monitoring
+    build: /kafka-monitoring
     depends_on:
       - kafka
     environment:
