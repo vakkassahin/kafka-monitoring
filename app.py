@@ -8,7 +8,18 @@ broker = os.environ.get("KAFKA_BROKER")
 topic = os.environ.get("KAFKA_TOPIC")
 
 # Yüksek kullanım alarmı için bir eşik değeri belirle
-threshold = int(os.environ.get("THRESHOLD"))
+threshold_str = os.environ.get("THRESHOLD")
+
+# THRESHOLD değeri kontrolü
+if threshold_str is not None:
+    try:
+        threshold = int(threshold_str)
+    except ValueError:
+        print("Error: THRESHOLD must be a valid integer.")
+        sys.exit(1)
+else:
+    print("Error: THRESHOLD is not defined.")
+    sys.exit(1)
 
 # Broker değişkeninin None olmadığından emin ol
 if broker is not None:
@@ -53,4 +64,5 @@ if broker is not None:
             receive_usage()
             time.sleep(1)
 else:
-    print("Error: Broker is not defined")
+    print("Error: Broker is not defined.")
+    sys.exit(1)
