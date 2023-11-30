@@ -4,41 +4,47 @@ import time
 import random
 from kafka import KafkaProducer, KafkaConsumer
 
-# Get the environment variables
+# Kafka broker ve topic adını ortam değişkenlerinden al
 broker = os.environ.get("KAFKA_BROKER")
 topic = os.environ.get("KAFKA_TOPIC")
+
+# Yüksek kullanım alarmı için bir eşik değeri belirle
 threshold = int(os.environ.get("THRESHOLD"))
 
-# Create a producer
+# Kafka'ya bağlanmak için bir üretici ve bir tüketici oluştur
 producer = KafkaProducer(bootstrap_servers=broker)
-
-# Create a consumer
 consumer = KafkaConsumer(topic, bootstrap_servers=broker, auto_offset_reset="latest")
 
-# Define a function to generate fake CPU and Memory usage
+# Sahte CPU ve bellek kullanımı verisi üretmek için bir fonksiyon tanımla
 def generate_usage():
   cpu = random.randint(0, 100)
   memory = random.randint(0, 100)
   return cpu, memory
 
-# Define a function to send the usage data to Kafka
+# Kullanım verisini Kafka'ya göndermek için bir fonksiyon tanımla
 def send_usage():
-  cpu, memory = generate_usage()
-  message = f"CPU: {cpu}%, Memory: {memory}%"
-  producer.send(topic, message.encode())
-  print(f"Sent: {message}")
+  try:
+    cpu, memory = generate_usage()
+    message = f"CPU: {cpu}%, Memory: {memory}%"
+    producer.send(topic, message.encode())
+    print(f"Sent: {message}")
+  except Exception as e:
+    print(f"Error: {e}")
 
-# Define a function to receive the usage data from Kafka and check the threshold
+# Kullanım verisini Kafka'dan almak ve eşik değerini kontrol etmek için bir fonksiyon tanımla
 def receive_usage():
-  for message in consumer:
-    message = message.value.decode()
-    print(f"Received: {message}")
-    cpu, memory = map(int, message.split(": ")[1].split("%, "))
-    if cpu > threshold or memory > threshold:
-      print(f"Alarm: High usage detected! {message}")
+  try:
+    for message in consumer:
+      message = message.value.decode()
+      print(f"Received: {message}")
+      cpu, memory = map(int, message.split(": ")[1].split("%, "))
+      if cpu > threshold or memory > threshold:
+        print(f"Alarm: High usage detected! {message}")
+  except Exception as e:
+    print(f"Error: {e}")
 
-# Run the producer and consumer in parallel
-if _name_ == "_main_":
+# Üretici ve tüketiciyi paralel olarak çalıştır
+if name == "main":
   while True:
     send_usage()
     receive_usage()
