@@ -39,8 +39,10 @@ if broker is not None:
                 message = message.value.decode()
                 print(f"Received: {message}")
                 cpu, memory = map(int, message.split(": ")[1].split("%, "))
-                if cpu > threshold and memory > threshold:
-                    print(f"Alarm: High usage detected! {message}")
+                if cpu > threshold or memory > threshold:
+                    alarm_message = f"Alarm: High usage detected! {message}"
+                    print(alarm_message)
+                    # Burada alarm durumuyla yapılacak ek işlemleri ekleyebilirsiniz.
         except Exception as e:
             print(f"Error: {e}")
 
