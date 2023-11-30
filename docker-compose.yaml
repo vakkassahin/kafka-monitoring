@@ -1,9 +1,11 @@
 version: '3'
+
 services:
   zookeeper:
     image: wurstmeister/zookeeper
     ports:
       - "2181:2181"
+
   kafka:
     image: wurstmeister/kafka
     ports:
@@ -18,11 +20,13 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-  app:
-    build: .
-    depends_on:
-      - kafka
+
+  kafka-manager:
+    image: hlebalbau/kafka-manager:stable
+    ports:
+      - "9000:9000"
     environment:
-      KAFKA_BROKER: kafka:9092
-      KAFKA_TOPIC: cpu_memory
-      THRESHOLD: 80
+      ZK_HOSTS: "zookeeper:2181"
+    depends_on:
+      - zookeeper
+
