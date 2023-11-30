@@ -47,7 +47,7 @@ def receive_usage():
     print(f"Error: {e}")
 
 # Üretici ve tüketiciyi paralel olarak çalıştır
-if name == "main":
+if __name__ == "__main__":
   while True:
     send_usage()
     receive_usage()
