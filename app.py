@@ -1,6 +1,7 @@
 import os
 import time
 import random
+import sys
 from kafka import KafkaProducer, KafkaConsumer
 
 # Kafka broker ve topic adını ortam değişkenlerinden al
