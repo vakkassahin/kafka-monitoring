@@ -10,9 +10,9 @@ topic = os.environ.get("KAFKA_TOPIC")
 # Yüksek kullanım alarmı için bir eşik değeri belirle
 threshold = int(os.environ.get("THRESHOLD"))
 
-# Kafka'ya bağlanmak için bir üretici ve bir tüketici oluştur
 # Broker değişkeninin None olmadığından emin ol
 if broker is not None:
+  # Kafka'ya bağlanmak için bir üretici ve bir tüketici oluştur
   producer = KafkaProducer(bootstrap_servers=broker)
   consumer = KafkaConsumer(topic, bootstrap_servers=broker, auto_offset_reset="latest")
 else:
@@ -47,7 +47,7 @@ def receive_usage():
     print(f"Error: {e}")
 
 # Üretici ve tüketiciyi paralel olarak çalıştır
-if name == "main":
+if _name_ == "_main_":
   while True:
     send_usage()
     receive_usage()
