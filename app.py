@@ -1,4 +1,3 @@
-
 import os
 import time
 import random
@@ -12,8 +11,12 @@ topic = os.environ.get("KAFKA_TOPIC")
 threshold = int(os.environ.get("THRESHOLD"))
 
 # Kafka'ya bağlanmak için bir üretici ve bir tüketici oluştur
-producer = KafkaProducer(bootstrap_servers=broker)
-consumer = KafkaConsumer(topic, bootstrap_servers=broker, auto_offset_reset="latest")
+# Broker değişkeninin None olmadığından emin ol
+if broker is not None:
+  producer = KafkaProducer(bootstrap_servers=broker)
+  consumer = KafkaConsumer(topic, bootstrap_servers=broker, auto_offset_reset="latest")
+else:
+  print("Error: Broker is not defined")
 
 # Sahte CPU ve bellek kullanımı verisi üretmek için bir fonksiyon tanımla
 def generate_usage():
