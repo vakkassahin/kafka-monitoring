@@ -11,12 +11,14 @@ services:
     environment:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "cpu:1:1"
+      KAFKA_CREATE_TOPICS: "cpu_memory:1:1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   app:
     build: .
     depends_on:
       - kafka
-    volumes:
-      - .:/app
+    environment:
+      KAFKA_BROKER: kafka:9092
+      KAFKA_TOPIC: cpu_memory
+      THRESHOLD: 80
