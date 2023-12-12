@@ -17,6 +17,6 @@
 - docker exec -it kafka-monitoring-zookeeper-1 bash 
 - ./bin/zkCli.sh
 - create /kafka-manager ""
-create /kafka-manager/mutex ""
-create /kafka-manager/mutex/locks ""
-create /kafka-manager/mutex/leases ""
+- create /kafka-manager/mutex ""
+- create /kafka-manager/mutex/locks ""
+- create /kafka-manager/mutex/leases ""
