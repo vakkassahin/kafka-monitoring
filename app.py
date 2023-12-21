@@ -26,15 +26,7 @@ else:
 if broker is not None:
     # Kafka'ya bağlanmak için bir üretici ve bir tüketici oluştur
     producer = KafkaProducer(bootstrap_servers=broker)
-    consumer = KafkaConsumer(topic, bootstrap_servers=broker, auto_offset_reset="latest")
 
-    # Sahte CPU ve bellek kullanımı verisi üretmek için bir fonksiyon tanımla
-    def generate_usage():
-        cpu = random.randint(0, 100)
-        memory = random.randint(0, 100)
-        return cpu, memory
-
-    # Kullanım verisini Kafka'ya göndermek için bir fonksiyon tanımla
     def send_usage():
         try:
             cpu, memory = generate_usage()
@@ -44,7 +36,14 @@ if broker is not None:
         except Exception as e:
             print(f"Error: {e}")
 
-    # Kullanım verisini Kafka'dan almak ve eşik değerini kontrol etmek için bir fonksiyon tanımla
+    def generate_usage():
+        cpu = random.randint(0, 100)
+        memory = random.randint(0, 100)
+        return cpu, memory
+
+    # Kafka'ya bağlanmak için bir tüketici oluştur
+    consumer = KafkaConsumer(topic, bootstrap_servers=broker, auto_offset_reset="latest")
+
     def receive_usage():
         try:
             for message in consumer:
@@ -58,7 +57,6 @@ if broker is not None:
         except Exception as e:
             print(f"Error: {e}")
 
-    # Üretici ve tüketiciyi paralel olarak çalıştır
     if __name__ == "__main__":
         while True:
             send_usage()
