@@ -1,6 +1,7 @@
 import os
 import time
 import random
+import sys
 from kafka import KafkaProducer
 
 # Kafka broker ve topic adını ortam değişkenlerinden al
@@ -32,8 +33,21 @@ if broker is not None:
             message = f"CPU: {cpu}%, Memory: {memory}%"
             producer.send(topic, message.encode())
             print(f"Sent: {message}")
+
+            # Yüksek kullanım durumlarını kontrol et ve alarm gönder
+            if cpu >= threshold:
+                send_alarm(f"High CPU Usage! CPU: {cpu}%")
+
+            if memory >= threshold:
+                send_alarm(f"High Memory Usage! Memory: {memory}%")
+
         except Exception as e:
             print(f"Error: {e}")
+
+    def send_alarm(alarm_message):
+        # Kafka'ya alarm mesajını gönder
+        producer.send(topic, alarm_message.encode())
+        print(f"Sent Alarm: {alarm_message}")
 
     def generate_usage():
         cpu = random.randint(0, 100)
