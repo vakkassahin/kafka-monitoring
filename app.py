@@ -1,8 +1,7 @@
 import os
 import time
 import random
-import sys
-from kafka import KafkaProducer, KafkaConsumer
+from kafka import KafkaProducer
 
 # Kafka broker ve topic adını ortam değişkenlerinden al
 broker = os.environ.get("KAFKA_BROKER")
@@ -24,7 +23,7 @@ else:
 
 # Broker değişkeninin None olmadığından emin ol
 if broker is not None:
-    # Kafka'ya bağlanmak için bir üretici ve bir tüketici oluştur
+    # Kafka'ya bağlanmak için bir üretici oluştur
     producer = KafkaProducer(bootstrap_servers=broker)
 
     def send_usage():
@@ -41,27 +40,10 @@ if broker is not None:
         memory = random.randint(0, 100)
         return cpu, memory
 
-    # Kafka'ya bağlanmak için bir tüketici oluştur
-    consumer = KafkaConsumer(topic, bootstrap_servers=broker, auto_offset_reset="latest")
-
-    def receive_usage():
-        try:
-            for message in consumer:
-                message = message.value.decode()
-                print(f"Received: {message}")
-                cpu, memory = map(int, message.split(": ")[1].split("%, "))
-                if cpu > threshold or memory > threshold:
-                    alarm_message = f"Alarm: High usage detected! {message}"
-                    print(alarm_message)
-                    # Burada alarm durumuyla yapılacak ek işlemleri ekleyebilirsiniz.
-        except Exception as e:
-            print(f"Error: {e}")
-
     if __name__ == "__main__":
         while True:
             send_usage()
-            receive_usage()
-            time.sleep(1)
+            time.sleep(10)  # Her 10 saniyede bir alarm üret
 else:
     print("Error: Broker is not defined.")
     sys.exit(1)
